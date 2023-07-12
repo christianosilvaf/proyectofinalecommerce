@@ -20,6 +20,7 @@
     --z-modalproduct: 4000;
     --spancarrito: white;
     --backgtotal:rgba(0, 0, 0, .8);
+    --first-colorcarrito: hsla(354, 78%, 60%,0.2);
 }
 
 body.dark-theme {
@@ -33,7 +34,8 @@ body.dark-theme {
     --container-color: hsl(246, 16%, 12%);
     --border-color: hsl(0, 0%, 20%);
     --spancarrito: black;
-    --backgtotal: rgba(255, 255, 255, .8)
+    --backgtotal: rgba(255, 255, 255, .8);
+    --first-colorcarrito: hsla(182, 53%, 74%,0.2);
 }
 
 * {
@@ -75,7 +77,7 @@ body::-webkit-scrollbar-track {
 body:after {
     content: "Hecho por: Christian Silva"; 
     font-size: 3rem;  
-    color: rgba(120, 136, 143,0.4);
+    color: rgba(120, 136, 143,0.3);
     z-index: -1;
     display: block;
     align-items: flex-start;
@@ -261,6 +263,13 @@ body:after {
     position: absolute;
     top: 0rem;
     right: -1rem;
+}
+
+
+
+.carritoaccion{
+    transform: scale(2.5); 
+    transition:  transform 0.5s;
 }
 
 .languaje {

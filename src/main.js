@@ -40,6 +40,7 @@ function printProducts(database){
 
 function addtoCart(database){
     const productsHTML=document.querySelector(".contenedor_products");
+    const accioncarritoHTML=document.querySelector("#accionarcarrito");
     productsHTML.addEventListener("click", function (e) {
 
         if(e.target.classList.contains("bx")){
@@ -54,7 +55,10 @@ function addtoCart(database){
             };
             let carstoragelo=JSON.stringify(database.cart);
             window.localStorage.setItem("cart",carstoragelo);
-            
+            calculations(database);
+            accioncarritoHTML.classList.add("carritoaccion");
+            setInterval(()=>accioncarritoHTML.classList.remove("carritoaccion"), 600);
+
         }
 
         const prodencarroHTML =document.querySelector(".productosencarro");
@@ -88,12 +92,11 @@ function addtoCart(database){
                 </div>
             `; 
         };
-        prodencarroHTML.innerHTML=html; 
-         
+        prodencarroHTML.innerHTML=html;   
     });
 };
 
-//funcion para pintar los elementos guardados en el cart(local?)
+//funcion para pintar los elementos revisando las modificaciones del cart, se implementa en la funciona de arriba y la de abajo y se llama en main para pintar el locarl storage
 function addlocalproducts(database) {
     const prodencarroHTML =document.querySelector(".productosencarro");
         let html ="";
@@ -126,6 +129,7 @@ function addlocalproducts(database) {
             `; 
         };
         prodencarroHTML.innerHTML=html;
+        calculations(database);
 };
 
 //funcion para la quitar  o poner articulos al carro
@@ -142,6 +146,9 @@ function addremovecart(database){
                 return alert("No hay más en Stock");
 
             database.cart[idd].amount++;
+
+            let carstoragelo=JSON.stringify(database.cart);//ojo
+            window.localStorage.setItem("cart",carstoragelo); //ojo
         };
 
         if(e.target.classList.contains("bx-minus")){
@@ -154,15 +161,19 @@ function addremovecart(database){
             } else{
                 database.cart[idd].amount--;
             }; 
+
+            let carstoragelo=JSON.stringify(database.cart);//ojo
+            window.localStorage.setItem("cart",carstoragelo); //ojo
         };
 
         if(e.target.classList.contains("bxs-trash")){
             const idd=Number(e.target.parentElement.id);
             delete database.cart[idd];
+
+            let carstoragelo=JSON.stringify(database.cart);//ojo
+            window.localStorage.setItem("cart",carstoragelo); //ojo
         };
-        window.localStorage.setItem("cart",JSON.stringify(database.cart));
-        addlocalproducts(database);
-        
+        addlocalproducts(database);//para cada listener pinta las modificaciones en el cart
     });
 
     const vaciarHTML=document.querySelector(".total")
@@ -175,25 +186,28 @@ function addremovecart(database){
 
         window.localStorage.setItem("cart",JSON.stringify(database.cart));
         addlocalproducts(database);
-        
     });
 
     
 };
 
-//calcular cantidad y valores totales
+//calcular cantidad y valores totales de items y los pinta 
 function calculations(database){
 
     const totalprodHTML=document.querySelector(".Total_prod");
     const totalpriceHTML=document.querySelector(".Total_price");
+    const totalAmountProductsHTML=document.querySelector(".totalAmountProducts");
+    const entucarroHTML=document.querySelector(".entucarro");
     let totalprod=0;
     let totalprice=0;
     for (const product in database.cart) {
         totalprod+=database.cart[product].amount;
         totalprice+=database.cart[product].amount*database.cart[product].price;
     } 
-    totalprodHTML.textContent+= totalprod + "  Items";
-    totalpriceHTML.textContent+= totalprice+ ".00";
+    totalprodHTML.textContent="Total Products ="+ totalprod+ "  Items";
+    totalpriceHTML.textContent="Total=  $"+ totalprice+ ".00";
+    totalAmountProductsHTML.textContent=totalprod;
+    entucarroHTML.textContent="EN TU CARRO: " +totalprod+ "  Items"
 };
 
 async function main(){
@@ -202,7 +216,7 @@ async function main(){
         cart: JSON.parse(window.localStorage.getItem("cart")) || {}
     };
     printProducts(database);
-    addlocalproducts(database);
+    addlocalproducts(database)
     addtoCart(database);
     addremovecart(database);
     calculations(database);
@@ -340,11 +354,17 @@ languaje2HTML.addEventListener("click",function(){
 
 //dark mode
 const darkHTML=document.querySelector(".darkmode");
+const bodyHTML=document.querySelector("body");
+let Dmo= JSON.parse(localStorage.getItem("dark-mode"));
+bodyHTML.classList.toggle("dark-theme",Dmo);
 
 darkHTML.addEventListener("click", function(){
-    const bodyHTML=document.querySelector("body");
-    bodyHTML.classList.toggle("dark-theme");
-    
-    //documento.querySelector("product_info").classList.toggle("dark-theme");
+    if(!JSON.parse(localStorage.getItem("dark-mode"))){
+        bodyHTML.classList.add("dark-theme");
+        localStorage.setItem("dark-mode",JSON.stringify(true));
+    } else{
+        bodyHTML.classList.remove("dark-theme");
+        localStorage.setItem("dark-mode",JSON.stringify(false));
+    }
 });
 
