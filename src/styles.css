@@ -979,8 +979,8 @@ footer a:hover {
         align-items: center;
         justify-content: center;
         font-size: small;
-    }
-
+    }  
+    
 }
 
 
@@ -1029,9 +1029,20 @@ footer a:hover {
 }
 
 /*al final porque se produjo la logica al final*/
+
 .sinstock{
+    width: 200px;
+    display: grid;
+    place-items: center;
+    top: 0rem;
+    right: 0rem;
+    left: 0rem;
+    bottom: 0rem;
     color: var(--first-color);
+    z-index: 3;
 }
+
+
 
 @media (max-width: 760px) {
 

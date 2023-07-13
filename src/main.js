@@ -22,7 +22,7 @@ function printProducts(database){
             html+= `
         <div class="product_item">
             <div class="item_img">
-            
+                <img class="sinstock" src="./src/img/outofstock.png">
                 <img clas="rr"src="${product.image}" alt="imagen" id="imag" />
             </div>
             <div class="product_info">
