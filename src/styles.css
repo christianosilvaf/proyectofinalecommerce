@@ -829,6 +829,9 @@ footer a:hover {
     background-color: var(--card-color);
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    position: relative;
 }
 
 .product_info {
@@ -876,6 +879,8 @@ footer a:hover {
 #imag {
     width: 100%;
     display: block;
+    grid-column: 4;
+    grid-row: 1; 
 }
 
 #imag:hover {
@@ -1031,15 +1036,12 @@ footer a:hover {
 /*al final porque se produjo la logica al final*/
 
 .sinstock{
-    width: 200px;
-    display: grid;
-    place-items: center;
-    top: 0rem;
-    right: 0rem;
-    left: 0rem;
-    bottom: 0rem;
+    width: 40%;
     color: var(--first-color);
-    z-index: 3;
+    grid-column: 1/span 8;
+    grid-row: 1; 
+    padding-top: 20%;
+    z-index: 1;
 }
 
 

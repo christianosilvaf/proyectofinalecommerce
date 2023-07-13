@@ -28,7 +28,7 @@ function printProducts(database){
             <div class="product_info">
                 <h3>${product.name}</h3>
                 <span>$${product.price}.00 
-                    <div id="bxsq"><i class='bx bxs-plus-square bx-lg' id="${product.id}"></i></div>
+                    <div class="bx" id="bxsq"><i class='bx bxs-plus-square bx-lg' id="${product.id}"></i></div>
                     <span class="sinstock"><b>Stock</b>: Out of Stock</span>
                 </span>
             </div>    
@@ -44,7 +44,7 @@ function printProducts(database){
             <div class="product_info">
                 <h3>${product.name}</h3>
                 <span>$${product.price}.00 
-                    <div id="bxsq"><i class='bx bxs-plus-square bx-lg' id="${product.id}"></i></div>
+                    <div class="bx" id="bxsq"  ><i class='bx bxs-plus-square bx-lg' id="${product.id}"></i></div>
                     <span><b>Stock</b>: ${product.quantity}</span>
                 </span>
             </div>    
@@ -55,31 +55,58 @@ function printProducts(database){
     products_secHTML.innerHTML=html;
 };
 
-//funcion para añadir productos al carro:
+//funcion para añadir productos al carro: falta cuando no hay stock no dejar agregar
 
 function addtoCart(database){
-    const productsHTML=document.querySelector(".contenedor_products");
-    const accioncarritoHTML=document.querySelector("#accionarcarrito");
+    let productsHTML=document.querySelector(".products_section");
+    let accioncarritoHTML=document.querySelector("#accionarcarrito");
     productsHTML.addEventListener("click", function (e) {
-
+        
         if(e.target.classList.contains("bx")){
-            
+
             const idd=Number(e.target.id);
             const productFound=database.products.find((product) => product.id===idd);
-            if(database.cart[productFound.id]){
-                database.cart[productFound.id].amount+=1;
+            const a=productFound.quantity;
+            if(a>0) {
+                if(database.cart[productFound.id]){
+                    if(database.cart[productFound.id].quantity>database.cart[productFound.id].amount){
+                    database.cart[productFound.id].amount+=1
+                } else {window.alert("No hay suficiente Stock")
+                };
+
+                } else {
+                    database.cart[productFound.id]= {
+                        ...productFound,amount:1};
+                };
+
+                const clikmeHTML = e.target.classList.contains("bx");
+                const boxHTML = document.querySelector(".carritocompras");
+
+                productsHTML.addEventListener("click", () => {
+                    if(clikmeHTML){
+                        boxHTML.animate(
+                            [
+                                { transform: "scale(1)" },
+                                { transform: "scale(2)" },
+                                { transform: "scale(1)" },
+                            ],
+                            {
+                                duration: 200,
+                            }
+                        );
+                    }
+                });
             } else {
-                database.cart[productFound.id]= {
-                    ...productFound,amount:1};
+                window.alert("No hay suficiente Stock");
             };
+            
             let carstoragelo=JSON.stringify(database.cart);
             window.localStorage.setItem("cart",carstoragelo);
             calculations(database);
-            accioncarritoHTML.classList.add("carritoaccion");
-            setInterval(()=>accioncarritoHTML.classList.remove("carritoaccion"), 600);
+            
 
-        }
-
+        };
+  
         const prodencarroHTML =document.querySelector(".productosencarro");
         let html ="";
         
