@@ -1028,6 +1028,11 @@ footer a:hover {
     }
 }
 
+/*al final porque se produjo la logica al final*/
+.sinstock{
+    color: var(--first-color);
+}
+
 @media (max-width: 760px) {
 
     .home{

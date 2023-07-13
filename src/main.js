@@ -18,7 +18,25 @@ function printProducts(database){
     let html="";
     
     for (const product of database.products) {
-        html+= `
+        if(product.quantity==0){ //if para pintar si nohay stock
+            html+= `
+        <div class="product_item">
+            <div class="item_img">
+            
+                <img clas="rr"src="${product.image}" alt="imagen" id="imag" />
+            </div>
+            <div class="product_info">
+                <h3>${product.name}</h3>
+                <span>$${product.price}.00 
+                    <div id="bxsq"><i class='bx bxs-plus-square bx-lg' id="${product.id}"></i></div>
+                    <span class="sinstock"><b>Stock</b>: Out of Stock</span>
+                </span>
+            </div>    
+        </div>
+        `;
+
+        } else{
+            html+= `
         <div class="product_item">
             <div class="item_img">
                 <img clas="rr"src="${product.image}" alt="imagen" id="imag" />
@@ -32,6 +50,7 @@ function printProducts(database){
             </div>    
         </div>
         `;
+        };
     };
     products_secHTML.innerHTML=html;
 };
@@ -176,7 +195,7 @@ function addremovecart(database){
         addlocalproducts(database);//para cada listener pinta las modificaciones en el cart
     });
 
-    const vaciarHTML=document.querySelector(".total")
+    const vaciarHTML=document.querySelector(".total");
     vaciarHTML.addEventListener("click",function(e){
         if(e.target.classList.contains("sup")){
             const response = confirm("¿Desea Vaciar su Carrito?");
@@ -210,6 +229,41 @@ function calculations(database){
     entucarroHTML.textContent="EN TU CARRO: " +totalprod+ "  Items"
 };
 
+//funcion para comprar
+function comprando(database){
+    const comprarHTML=document.querySelector(".total");
+    const totalprodHTML=document.querySelector(".Total_prod");
+    const totalpriceHTML=document.querySelector(".Total_price");
+    comprarHTML.addEventListener("click",function(e){
+        if(e.target.classList.contains("Comprar")){
+            if(!Object.values(database.cart).length)
+                return alert("No tienes Items en tu Carrito");
+
+            const response= confirm(`${totalprodHTML.textContent} for a: ${totalpriceHTML.textContent} 
+                                        ¿Confirmas tu compra?`);
+            if(!response) return;
+
+            let array={} //array para identificar productos endatabase y borrar
+            for (const product in database.cart) {
+                for (const product2 in database.products){
+                    const idbought= database.cart[product].id;
+                    const amountbought=database.cart[product].amount;
+                    const prodinstock= database.products[product2];
+                    if(prodinstock.id===idbought){
+                        prodinstock.quantity-=amountbought;
+                    };
+                };
+            printProducts(database);//ojoojisimo
+            let carstoragelo=JSON.stringify(database.products); //para arreglar el local storage
+            window.localStorage.setItem("products",carstoragelo);
+            database.cart={}; //se limpia el carrito despues de comprar
+            window.localStorage.setItem("cart",JSON.stringify(database.cart)); //junto con esto
+            addlocalproducts(database); //y esto para borrar el carro
+            };
+        };
+    });
+};
+
 async function main(){
     const database={ 
         products:JSON.parse(window.localStorage.getItem("products")) ||  await getProducts(),
@@ -221,6 +275,7 @@ async function main(){
     addremovecart(database);
     calculations(database);
     filter(database);
+    comprando(database);
 };
 
 main()
