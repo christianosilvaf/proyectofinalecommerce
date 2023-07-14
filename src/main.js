@@ -39,6 +39,7 @@ function printProducts(database){
             html+= `
         <div class="product_item">
             <div class="item_img">
+                <span class="vermas" id="${product.id}" ><i class='bx bxs-zoom-in bx-lg'></i></span>
                 <img clas="rr"src="${product.image}" alt="imagen" id="imag" />
             </div>
             <div class="product_info">
@@ -461,3 +462,37 @@ darkHTML.addEventListener("click", function(){
     }
 });
 
+//modal
+const vermasHTML=document.querySelector(".vermas");
+vermasHTML.addEventListener("click",function(e){
+
+    console.log("click en los vermas");
+    const modalHTML=document.querySelector(".modal");
+    //modalHTML.classList.add("modal_hide");
+        const database={ 
+            products:JSON.parse(window.localStorage.getItem("products"))};
+            
+        let html="";
+        console.log(e.target.parentElement.id);
+        for (const product of database.products) {
+            const idd=product.id;
+            
+            if(e.target.parentElement.id=idd){
+                html+= `
+            <div class="product_item">
+                <div class="item_img">
+                    <span class="vermas" id="ver" ><i class='bx bxs-zoom-in bx-lg'></i></span>
+                    <img clas="rr"src="${product.image}" alt="imagen" id="imag" />
+                </div>
+                <div class="product_info">
+                    <h3>${product.name}</h3>
+                    <span>$${product.price}.00 
+                        <div class="bx" id="bxsq"  ><i class='bx bxs-plus-square bx-lg' id="${product.id}"></i></div>
+                        <span><b>Stock</b>: ${product.quantity}</span>
+                    </span>
+                </div>    
+            </div>
+            `;}
+            modalHTML.innerHTML=html;
+    };
+});

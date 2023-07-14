@@ -908,6 +908,19 @@ footer a:hover {
     color: var(--first-color);
 }
 
+/*el modal*/
+.modal{
+    width: 30%;
+    height: 100px;
+    background-color: red;
+    display: flex;
+    z-index: 2;
+}
+
+.modal_hide{
+    display: none;
+}
+
 @media (max-width: 470px) {
 
     .carro {
