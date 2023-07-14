@@ -53,16 +53,19 @@ function printProducts(database){
         };
     };
     products_secHTML.innerHTML=html;
+    filter(database); //filter debe ir ahi
 };
 
 //funcion para añadir productos al carro: falta cuando no hay stock no dejar agregar
 
 function addtoCart(database){
-    let productsHTML=document.querySelector(".products_section");
+    let productsHTML=document.querySelector(".contenedor_products");
     let accioncarritoHTML=document.querySelector("#accionarcarrito");
     productsHTML.addEventListener("click", function (e) {
         
-        if(e.target.classList.contains("bx")){
+        const clikmeHTML=e.target.classList.contains("bx")
+        if(clikmeHTML){
+            
 
             const idd=Number(e.target.id);
             const productFound=database.products.find((product) => product.id===idd);
@@ -78,11 +81,24 @@ function addtoCart(database){
                     database.cart[productFound.id]= {
                         ...productFound,amount:1};
                 };
+        
 
-                const clikmeHTML = e.target.classList.contains("bx");
+                
+            } else {
+                window.alert("No hay suficiente Stock");
+            };
+            
+            let carstoragelo=JSON.stringify(database.cart);
+            window.localStorage.setItem("cart",carstoragelo);
+            calculations(database);
+
+
+        };
+
+        //animación de boton añadir a carro
                 const boxHTML = document.querySelector(".carritocompras");
 
-                productsHTML.addEventListener("click", () => {
+                
                     if(clikmeHTML){
                         boxHTML.animate(
                             [
@@ -95,18 +111,9 @@ function addtoCart(database){
                             }
                         );
                     }
-                });
-            } else {
-                window.alert("No hay suficiente Stock");
-            };
-            
-            let carstoragelo=JSON.stringify(database.cart);
-            window.localStorage.setItem("cart",carstoragelo);
-            calculations(database);
-            
+                
 
-        };
-  
+        
         const prodencarroHTML =document.querySelector(".productosencarro");
         let html ="";
         
@@ -141,6 +148,9 @@ function addtoCart(database){
         prodencarroHTML.innerHTML=html;   
     });
 };
+
+//animacion añadir al carro
+
 
 //funcion para pintar los elementos revisando las modificaciones del cart, se implementa en la funciona de arriba y la de abajo y se llama en main para pintar el locarl storage
 function addlocalproducts(database) {
@@ -280,12 +290,13 @@ function comprando(database){
                         prodinstock.quantity-=amountbought;
                     };
                 };
-            printProducts(database);//ojoojisimo
+
             let carstoragelo=JSON.stringify(database.products); //para arreglar el local storage
             window.localStorage.setItem("products",carstoragelo);
             database.cart={}; //se limpia el carrito despues de comprar
             window.localStorage.setItem("cart",JSON.stringify(database.cart)); //junto con esto
             addlocalproducts(database); //y esto para borrar el carro
+            printProducts(database);//ojoojisimo daña el filter 
             };
         };
     });
@@ -296,13 +307,16 @@ async function main(){
         products:JSON.parse(window.localStorage.getItem("products")) ||  await getProducts(),
         cart: JSON.parse(window.localStorage.getItem("cart")) || {}
     };
+    
     printProducts(database);
+    
     addlocalproducts(database)
     addtoCart(database);
     addremovecart(database);
     calculations(database);
-    filter(database);
     comprando(database);
+
+    
 };
 
 main()
@@ -315,10 +329,11 @@ function filter(database) {
     filterHTML.addEventListener("click", function (e) {
         if(e.target.classList.contains("Camisetas")){
             for (const product of productosHTML) { //esto devuelve un string del tipo camisa o sweeter
+                
                 const arrayzero=product.firstElementChild.textContent.split(" ")[0]
+
                 if(!arrayzero.includes("Camiseta")){
                     product.parentElement.classList.add("product_item_hide");
-                    
                 } else{product.parentElement.classList.remove("product_item_hide");};
             };
         };
@@ -328,8 +343,7 @@ function filter(database) {
                 const arrayzero=product.firstElementChild.textContent.split(" ")[0]
                 if(!arrayzero.includes("Hoddie")){
                     product.parentElement.classList.add("product_item_hide");
-                    console.log(product.parentElement);//linea de ayua puede borrarse
-                }else{product.parentElement.classList.remove("product_item_hide");};
+                } else{product.parentElement.classList.remove("product_item_hide");};
             };
         };
 
@@ -339,7 +353,6 @@ function filter(database) {
                 const arrayzero=product.firstElementChild.textContent.split(" ")[0]
                 if(!arrayzero.includes("Sweater")){
                     product.parentElement.classList.add("product_item_hide");
-                    console.log(product.parentElement.classList);//linea de ayua puede borrarse
                 }else{product.parentElement.classList.remove("product_item_hide");};
             };
         };
@@ -347,7 +360,6 @@ function filter(database) {
         if(e.target.classList.contains("Todo")){
             for (const product of productosHTML) { //esto devuelve un string del tipo camisa o sweeter
                 product.parentElement.classList.remove("product_item_hide");
-                console.log(product.parentElement.classList);//linea de ayua puede borrarse
             };
         };
     });
