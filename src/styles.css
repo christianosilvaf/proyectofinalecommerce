@@ -961,7 +961,10 @@ footer a:hover {
 
 .product_info2 {
     color: var(--text-color);
-    width: 38%;
+    min-width: 310px;
+    
+    width: 100%;
+    max-width: 516px;
     padding: 1rem;
     display: flex;
     flex-direction: column;
