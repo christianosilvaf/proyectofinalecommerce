@@ -64,11 +64,10 @@ function addtoCart(database){
     let accioncarritoHTML=document.querySelector("#accionarcarrito");
     productsHTML.addEventListener("click", function (e) {
         
-        const clikmeHTML=e.target.classList.contains("bx")
+        const clikmeHTML=e.target.classList.contains("bxs-plus-square")
         if(clikmeHTML){
-            
-
             const idd=Number(e.target.id);
+            console.log(idd);
             const productFound=database.products.find((product) => product.id===idd);
             const a=productFound.quantity;
             if(a>0) {
@@ -196,9 +195,7 @@ function addremovecart(database){
         if(e.target.classList.contains("bx-plus")){
             const idd=Number(e.target.parentElement.parentElement.id);
             const productFind=database.products.find(
-                (product)=>product.id===idd
-            );
-
+                (product)=>product.id===idd);
             if (productFind.quantity===database.cart[productFind.id].amount)
                 return alert("No hay más en Stock");
 
@@ -463,36 +460,145 @@ darkHTML.addEventListener("click", function(){
 });
 
 //modal
-const vermasHTML=document.querySelector(".vermas");
-vermasHTML.addEventListener("click",function(e){
+const productsHTML=document.querySelector(".products_section");
+productsHTML.addEventListener("click",function(e){
 
-    console.log("click en los vermas");
     const modalHTML=document.querySelector(".modal");
-    //modalHTML.classList.add("modal_hide");
-        const database={ 
+    const database={ 
             products:JSON.parse(window.localStorage.getItem("products"))};
-            
-        let html="";
-        console.log(e.target.parentElement.id);
-        for (const product of database.products) {
-            const idd=product.id;
-            
-            if(e.target.parentElement.id=idd){
-                html+= `
+
+    let html="";
+    if(e.target.classList.contains("bxs-zoom-in")){
+        const idd=Number(e.target.parentElement.id);
+        
+        const productFind=database.products.find((product) => product.id===idd);  
+        html+= `
             <div class="product_item">
-                <div class="item_img">
-                    <span class="vermas" id="ver" ><i class='bx bxs-zoom-in bx-lg'></i></span>
-                    <img clas="rr"src="${product.image}" alt="imagen" id="imag" />
+                <div class="item_img_modal">
+                    <div class="vermasx"> <span class="cerrarmodal" >X</span> </div>
+                    <img clas="rr"src="${productFind.image}" alt="imagen" id="imag" />
                 </div>
-                <div class="product_info">
-                    <h3>${product.name}</h3>
-                    <span>$${product.price}.00 
-                        <div class="bx" id="bxsq"  ><i class='bx bxs-plus-square bx-lg' id="${product.id}"></i></div>
-                        <span><b>Stock</b>: ${product.quantity}</span>
+                <div class="product_info2">
+                    <h3>${productFind.name}</h3>
+                    <span>$${productFind.price}.00 
+                        <div class="bx" id="bxsq"  ><i class='bx bxs-plus-square bx-lg' id="${productFind.id}"></i></div>
+                        <span><b>Stock</b>: ${productFind.quantity}</span>
                     </span>
                 </div>    
             </div>
-            `;}
-            modalHTML.innerHTML=html;
+        `;
+        
+        modalHTML.classList.add("modal_show");
+    }
+    
+        modalHTML.innerHTML=html;
+    
+
+});
+
+//cerrar modal
+const modalHTML2=document.querySelector(".modal");
+
+modalHTML2.addEventListener("click",function(e) {
+    console.log(e.target);
+    modalHTML2.classList.remove("modal_show");
+
+    if(e.target.classList.contains("cerrarmodal")){
+        console.log(e.target);
+        modalHTML2.classList.remove("modal_show");
     };
 });
+
+//añadir al carro por modal
+const modal3HTML=document.querySelector(".modal");
+modal3HTML.addEventListener("click",function(e) {
+    
+    const database={ 
+        products:JSON.parse(window.localStorage.getItem("products")),
+        cart: JSON.parse(window.localStorage.getItem("cart")) || {}
+    };
+
+    const clikmeHTML=e.target.classList.contains("bxs-plus-square");
+        if(clikmeHTML){
+            const idd=Number(e.target.id);
+            console.log(idd);
+            const productFound=database.products.find((product) => product.id===idd);
+            const a=productFound.quantity;
+            if(a>0) {
+                if(database.cart[productFound.id]){
+                    if(database.cart[productFound.id].quantity>database.cart[productFound.id].amount){
+                    database.cart[productFound.id].amount+=1
+                } else {window.alert("No hay suficiente Stock")
+                };
+
+                } else {
+                    database.cart[productFound.id]= {
+                        ...productFound,amount:1};
+                };
+        
+
+                
+            } else {
+                window.alert("No hay suficiente Stock");
+            };
+            
+            let carstoragelo=JSON.stringify(database.cart);
+            window.localStorage.setItem("cart",carstoragelo);
+            calculations(database);
+
+
+        };
+
+        //animación de boton añadir a carro
+                const boxHTML = document.querySelector(".carritocompras");
+
+                
+                    if(clikmeHTML){
+                        boxHTML.animate(
+                            [
+                                { transform: "scale(1)" },
+                                { transform: "scale(2)" },
+                                { transform: "scale(1)" },
+                            ],
+                            {
+                                duration: 200,
+                            }
+                        );
+                    }
+                
+
+        
+        const prodencarroHTML =document.querySelector(".productosencarro");
+        let html ="";
+        
+        for(const key in database.cart){
+            const{amount, id, image,name,price}=database.cart[key];
+            html+= `
+                <div class="item_in_cart">
+                    <img src="${image}" alt="" />
+                    <div class="imagbrother">
+                        <div class="calculationsbro">
+                            <div class="info_item">
+                                <span>${name}</span>
+                                <span>Precio 1und= $${price}.00 </span>
+                            </div>
+                                <div class="cantidades" id="${id}">
+                                    <div >
+                                        <i class='bx bx-minus' ></i>
+                                        Cantidad:${amount}
+                                        <i class='bx bx-plus'></i>
+                                    </div>
+                                    <i class='bx bxs-trash bx-md'></i>
+                                </div>
+                        </div>
+                        <div class="calculations"> 
+                            <b>SubTotal</b>=1UndPrice X Cantidad= <b>$${price*amount}</b>
+                        </div>
+                        
+                    </div>
+                </div>
+            `; 
+        };
+        prodencarroHTML.innerHTML=html;
+
+})
