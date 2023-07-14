@@ -22,7 +22,7 @@ function printProducts(database){
             html+= `
         <div class="product_item">
             <div class="item_img">
-                <img class="sinstock" src="./src/img/outofstock.png">
+                <img class="sinstock2" src="./src/img/outofstock.png">
                 <img clas="rr"src="${product.image}" alt="imagen" id="imag" />
             </div>
             <div class="product_info">
@@ -67,7 +67,6 @@ function addtoCart(database){
         const clikmeHTML=e.target.classList.contains("bxs-plus-square")
         if(clikmeHTML){
             const idd=Number(e.target.id);
-            console.log(idd);
             const productFound=database.products.find((product) => product.id===idd);
             const a=productFound.quantity;
             if(a>0) {
@@ -358,6 +357,7 @@ async function main(){
     addremovecart(database);
     calculations(database);
     comprando(database);
+    carromodal(database);
 
     
 };
@@ -500,105 +500,99 @@ productsHTML.addEventListener("click",function(e){
 const modalHTML2=document.querySelector(".modal");
 
 modalHTML2.addEventListener("click",function(e) {
-    console.log(e.target);
+    
     modalHTML2.classList.remove("modal_show");
-
     if(e.target.classList.contains("cerrarmodal")){
-        console.log(e.target);
         modalHTML2.classList.remove("modal_show");
     };
 });
 
 //añadir al carro por modal
-const modal3HTML=document.querySelector(".modal");
-modal3HTML.addEventListener("click",function(e) {
-    
-    const database={ 
-        products:JSON.parse(window.localStorage.getItem("products")),
-        cart: JSON.parse(window.localStorage.getItem("cart")) || {}
-    };
-
-    const clikmeHTML=e.target.classList.contains("bxs-plus-square");
-        if(clikmeHTML){
-            const idd=Number(e.target.id);
-            console.log(idd);
-            const productFound=database.products.find((product) => product.id===idd);
-            const a=productFound.quantity;
-            if(a>0) {
-                if(database.cart[productFound.id]){
-                    if(database.cart[productFound.id].quantity>database.cart[productFound.id].amount){
-                    database.cart[productFound.id].amount+=1
-                } else {window.alert("No hay suficiente Stock")
-                };
-
-                } else {
-                    database.cart[productFound.id]= {
-                        ...productFound,amount:1};
-                };
+function carromodal(database){
+    const modal3HTML=document.querySelector(".modal");
+    modal3HTML.addEventListener("click",function(e) {
+        
         
 
-                
-            } else {
-                window.alert("No hay suficiente Stock");
-            };
+        const clikmeHTML=e.target.classList.contains("bxs-plus-square");
+            if(clikmeHTML){
+                const idd=Number(e.target.id);
+                const productFound=database.products.find((product) => product.id===idd);
+                const a=productFound.quantity;
+                if(a>0) {
+                    if(database.cart[productFound.id]){
+                        if(database.cart[productFound.id].quantity>database.cart[productFound.id].amount){
+                        database.cart[productFound.id].amount+=1
+                    } else {window.alert("No hay suficiente Stock")
+                    };
+
+                    } else {
+                        database.cart[productFound.id]= {
+                            ...productFound,amount:1};
+                    };
             
-            let carstoragelo=JSON.stringify(database.cart);
-            window.localStorage.setItem("cart",carstoragelo);
-            calculations(database);
 
-
-        };
-
-        //animación de boton añadir a carro
-                const boxHTML = document.querySelector(".carritocompras");
-
+                    
+                } else {
+                    window.alert("No hay suficiente Stock");
+                };
                 
-                    if(clikmeHTML){
-                        boxHTML.animate(
-                            [
-                                { transform: "scale(1)" },
-                                { transform: "scale(2)" },
-                                { transform: "scale(1)" },
-                            ],
-                            {
-                                duration: 200,
-                            }
-                        );
-                    }
-                
+                let carstoragelo=JSON.stringify(database.cart);//ojo
+                window.localStorage.setItem("cart",carstoragelo); //ojo
+                calculations(database);
+            };
 
-        
-        const prodencarroHTML =document.querySelector(".productosencarro");
-        let html ="";
-        
-        for(const key in database.cart){
-            const{amount, id, image,name,price}=database.cart[key];
-            html+= `
-                <div class="item_in_cart">
-                    <img src="${image}" alt="" />
-                    <div class="imagbrother">
-                        <div class="calculationsbro">
-                            <div class="info_item">
-                                <span>${name}</span>
-                                <span>Precio 1und= $${price}.00 </span>
-                            </div>
-                                <div class="cantidades" id="${id}">
-                                    <div >
-                                        <i class='bx bx-minus' ></i>
-                                        Cantidad:${amount}
-                                        <i class='bx bx-plus'></i>
-                                    </div>
-                                    <i class='bx bxs-trash bx-md'></i>
+            //animación de boton añadir a carro
+                    const boxHTML = document.querySelector(".carritocompras");
+
+                    
+                        if(clikmeHTML){
+                            boxHTML.animate(
+                                [
+                                    { transform: "scale(1)" },
+                                    { transform: "scale(2)" },
+                                    { transform: "scale(1)" },
+                                ],
+                                {
+                                    duration: 200,
+                                }
+                            );
+                        }
+                    
+
+            
+            const prodencarroHTML =document.querySelector(".productosencarro");
+            let html ="";
+            
+            for(const key in database.cart){
+                const{amount, id, image,name,price}=database.cart[key];
+                html+= `
+                    <div class="item_in_cart">
+                        <img src="${image}" alt="" />
+                        <div class="imagbrother">
+                            <div class="calculationsbro">
+                                <div class="info_item">
+                                    <span>${name}</span>
+                                    <span>Precio 1und= $${price}.00 </span>
                                 </div>
+                                    <div class="cantidades" id="${id}">
+                                        <div >
+                                            <i class='bx bx-minus' ></i>
+                                            Cantidad:${amount}
+                                            <i class='bx bx-plus'></i>
+                                        </div>
+                                        <i class='bx bxs-trash bx-md'></i>
+                                    </div>
+                            </div>
+                            <div class="calculations"> 
+                                <b>SubTotal</b>=1UndPrice X Cantidad= <b>$${price*amount}</b>
+                            </div>
+                            
                         </div>
-                        <div class="calculations"> 
-                            <b>SubTotal</b>=1UndPrice X Cantidad= <b>$${price*amount}</b>
-                        </div>
-                        
                     </div>
-                </div>
-            `; 
-        };
-        prodencarroHTML.innerHTML=html;
+                `; 
+            };
+            prodencarroHTML.innerHTML=html;
 
-})
+});
+};

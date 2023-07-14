@@ -1106,7 +1106,7 @@ footer a:hover {
 
 /*al final porque se produjo la logica al final*/
 
-.sinstock{
+.sinstock2{
     width: 40%;
     color: var(--first-color);
     grid-column: 1/span 8;
