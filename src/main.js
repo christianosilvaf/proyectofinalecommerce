@@ -302,25 +302,6 @@ function comprando(database){
     });
 };
 
-async function main(){
-    const database={ 
-        products:JSON.parse(window.localStorage.getItem("products")) ||  await getProducts(),
-        cart: JSON.parse(window.localStorage.getItem("cart")) || {}
-    };
-    
-    printProducts(database);
-    
-    addlocalproducts(database)
-    addtoCart(database);
-    addremovecart(database);
-    calculations(database);
-    comprando(database);
-
-    
-};
-
-main()
-
 //Funcion filtro  (perfecto)
 function filter(database) {
     const productosHTML=document.querySelectorAll(".product_info");
@@ -365,6 +346,24 @@ function filter(database) {
     });
     
 }
+
+async function main(){
+    const database={ 
+        products:JSON.parse(window.localStorage.getItem("products")) ||  await getProducts(),
+        cart: JSON.parse(window.localStorage.getItem("cart")) || {}
+    };
+    
+    printProducts(database);
+    
+    addlocalproducts(database)
+    addtoCart(database);
+    addremovecart(database);
+    calculations(database);
+    comprando(database);
+
+    
+};
+main()
 
 //para pantalla de carga
 window.addEventListener("load", function(){
